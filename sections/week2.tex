@@ -198,6 +198,80 @@ This brings us to the main theorem of this lecture (which we are going to prove)
         \leq \int_0^T L |\vec{x}_1(s) - \vec{x}_0(s)| ds \leq aLR,
     \end{align*}
 
-    one can then prove by induction that $|\vec{x}_{k+1} - \vec{x}_k| \leq (aL)^k R$, since $a \leq \min \left( \frac{\rho}{M}, \frac{1}{L} \right) \Rightarrow aL < 1$, one can prove that given $\epsilon > 0$, we can choose $N$ such that for $R,S > 0$, $|\vec{x}_R(t) - \vec{x}_S(t)| < \epsilon$ $\Rightarrow$ $\vec{x}_k(t) \rightarrow x(t)$ (as $k \rightarrow \infty$).
+    one can then prove by induction that $|\vec{x}_{k+1} - \vec{x}_k| \leq (aL)^k R$, since $a \leq \min \left( \frac{\rho}{M}, \frac{1}{L} \right) \Rightarrow aL < 1$, one can prove that given $\epsilon > 0$, we can choose $N$ such that for $R,S > 0$, $|\vec{x}_R(t) - \vec{x}_S(t)| < \epsilon$ $\Rightarrow$ $\vec{x}_k(t) \rightarrow x(t)$ (as $k \rightarrow \infty$). \\
+
+    \noindent (c)  show that our system actually converges to the solution of the ODE system: \\
+
+    Just look at the formulation for the Picard iteration: 
+
+    \begin{align*}
+        \vec{x}_{n+1}(t) = \vec{x}_0 + \int_0^t \vec{F}(\vec{x}_k(s))ds,
+    \end{align*}
+
+    take $k \rightarrow \infty$, we get:
+
+    \begin{align*} 
+        \vec{x}(t) = \vec{x}_0 + \int^t_0 \vec{F}(\vec{x}(s)) ds.
+    \end{align*}
+
+    The we just verify that this indeed is the flow in two steps: 
+
+    \begin{enumerate}[label=(\roman*)]
+        \item $\vec{x}(0) = \vec{x}_0 + \int^0_0 \vec{F}(\vec{x}(s)) ds =  \vec{x}_0$,
+        \item $\frac{\partial \vec{x}}{\partial t} = \frac{\partial}{\partial t} \vec{x}_0 + \frac{\partial }{\partial t}\int^t_0 \vec{F}(\vec{x}(s)) ds =  \vec{F}(\vec{x}(t))$ by the fundamental theorem of calculus.
+    \end{enumerate}
+
+    which proves that indeed the Picard iteration provides a solution to the ODE system.
+
+    \noindent (d)  NOT DONE IN 2021.
 
 \end{proof}
+
+Let's now got through a few examples of Picard iteration for the solutions of dynamical system.
+
+\begin{example}
+    $\frac{dx}{dt} = x$, with $x(0) = x_0$. \\ 
+    
+    Let's compute the first few Picard iterations:
+    \begin{align*}
+        x_0(t) = x_0\\
+        x_1(t) = x_0 + \int_0^t F(x_0(s)) ds = x_0 + \int_0^t x_0 ds = x_0 + x_0 t  \\
+        x_2(t) = x_0 + \int_0^t F(x_1(s)) ds = x_0 + x_0 t + x_0 t^2 \\
+        \vdots \\
+        x_k = x_0 \sum^k_{i=0} \frac{t!}{i!}
+    \end{align*}
+    which is just the Taylor expansion of $x_0 e^t$, $\lim_{k \rightarrow \infty} x_k = x_0 e^t$. 
+\end{example}
+
+\begin{example}
+    $\dot{x} = - \sqrt{x}$. Note that as $-\sqrt{x} \rightarrow \infty$ as $x \rightarrow 0$, the $F$ is not Lipschitz. Therefore, we can't guaranteed that a solution exists.
+\end{example}
+
+During this semester, we will assume that the $\vec{F}$ we consider is sufficiently smooth so that a unique solution always exists. 
+
+\subsubsection{Continuous Dependance on the Parameters}
+
+We can ask ourselves \textit{"if I starts with an initial condition which is slightly different, will the solution be completely different"}, as one can imagine, this question is deeply related to the very notion of chaos and will be of great importance further in the course. 
+
+\begin{theorem}
+    Consider $\frac{\partial \vec{x}}{\partial t} = \vec{F}(\vec{x})$, with $\vec{F}$ is $C^1$, with solution $\vec{x}(t)$ s.t. $\vec{x}(0) = \vec{x}_0$, then, there exists a neighborhood $U$ of $\vec{x}_0$ and a constant $k$ such that if $\vec{y}(t)$ is another solution of the system s.t. $\vec{y}(0) = \vec{y}_0$ and $\vec{y}_0 \in U$, then:
+    \begin{align*}
+        |\vec{y}(t) - \vec{x}(t)| \leq k |\vec{y}_0 - \vec{x}_0|e^{kt}.
+    \end{align*}    
+\end{theorem}
+
+We will not prove that theorem or the following claims in that course. 
+
+\begin{lemma}
+    If $\vec{\phi}(t,\vec{x}_0)$ is the flow of the system $\frac{\partial \vec{x}}{\partial t} = \vec{F}(\vec{x})$ and $\vec{F}$ is $C^1$, then $\vec{\phi}$ is a continuous function of $\vec{x}_0$.
+\end{lemma}
+
+\begin{example}
+    The flow of $\dot{x} = x$ is $x=\phi(x,t)=x_0 e^t$ which is continuous w.r.t. $x_0$.
+\end{example}
+
+\noindent More generally:
+
+\begin{lemma}
+    If $\frac{\partial \vec{x}}{\partial t} = \vec{F}(\vec{x},a)$ depends on some (fixed) parameters $\vec{a}$ and $\vec{F}$ is $C^1$, then the flow depends continuously on $a$.
+\end{lemma}
