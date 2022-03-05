@@ -23,23 +23,23 @@ Let's see how he modeled convection cells. He looked at a 2D simplification of t
 We consider the velocity field $\vec{v} = u \vec{e}_x + v \vec{e}_y$. We start our derivation from:
 
 \begin{enumerate}
-    \item A continuity equation : $\frac{\partial \rho}{\partial t} + \nabla (\rho \vec{v}) = 0$. \\
-    Since the flow is subsonic we can make the following (reasonable) approximation: $\rho = \text{constant}$. Which allows us to rewrite the equation as : 
+    \item A continuity equation : $\frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \vec{v}) = 0$. \\
+    Since the flow is subsonic we can make the following (reasonable) approximation: $\rho = cst $. Which allows us to rewrite the equation as : 
     \begin{align}
-        \nabla \vec{v} = \frac{\partial u}{ \partial x} + \frac{\partial w}{ \partial z} = 0  \tag{1}
+        \nabla \cdot\vec{v} = \frac{\partial u}{ \partial x} + \frac{\partial w}{ \partial z} = 0  \tag{1}
     \end{align}
     \item A momentum equation (Navier-Stokes):\\
     \begin{align*}
-        \overbrace{\rho \frac{D \vec{v}}{D t}}^\text{full derivative} 
+        \rho\overbrace{\frac{\mathrm{d} \vec{v}}{\mathrm{d} t}}^\text{full derivative}
         = \rho \left( 
-            \frac{\partial \vec{v}}{\partial t} + \vec{v} \nabla \vec{v} \right) 
+            \frac{\partial \vec{v}}{\partial t} + \vec{v}\cdot\nabla \vec{v} \right) 
         = - \nabla \rho + \overbrace{\rho \vec{g}}^{= - \rho g \vec{e}_z} + \mu \nabla^2 \vec{v} 
     \end{align*}
 \end{enumerate}
 
 Let us introduce a new quantity: \textit{deviation from hydrostatic pressure}, which corresponds to $\rho = \rho_\text{av}$:
  \[P = \frac{p - p_\text{ho}}{\rho_\text{av}}\]
-, where $p_\text{ho}  = g \rho_\text{av} (H-z)$. $\Rightarrow$ $p = \rho_\text{av}P + g \rho_\text{av}(H-z)$. Which allows us get to the following formulation of Navier-Stokes: 
+, where $p_\text{ho}  = g \rho_\text{av} (H-z)$ is the hydrostatic pressure. Thus we obtain by rearranging the terms $p = \rho_\text{av}P + g \rho_\text{av}(H-z)$. Which allows us get to the following formulation of Navier-Stokes: 
 
 \begin{align*}
     \frac{\partial \vec{v}}{ \partial t} = - \frac{1}{\rho} \nabla \left[ \rho_\text{av} P + g \rho_\text{av} (H-z) \right] + \frac{\mu}{\rho} \nabla^2 \vec{v} - g \vec{e}_z 
@@ -48,11 +48,11 @@ Let us introduce a new quantity: \textit{deviation from hydrostatic pressure}, w
 Because of the computational limitations of his time, Lorenz made several approximations:
 
 \begin{enumerate}
-    \item $\frac{\mu}{\rho} \approx \nu$ ($\nu$ constant)
+    \item $\frac{\mu}{\rho} \approx \nu = cst$ 
     \item $\frac{1}{\rho} \nabla (\rho_\text{av} P) \approx \nabla P$ (i.e., we assume a constant $\rho$, this is called the Boussinesq approximation)
     \item $\frac{1}{\rho} = \frac{1}{\rho_\text{av}} \left[ 1 + \epsilon (T-T_\text{av}) \right]$ (equation of state)
 \end{enumerate}
-
+Making calculations on the previous form of the Navier-Stokes equation and using our approximations, we obtain the followiing form of our equation
 \begin{align*}
     \frac{\partial \vec{v}}{ \partial t} = - \overbrace{\nabla P}^{2.} + g \vec{e}_z \overbrace{ \left[1 + \epsilon (T-T_\text{av})\right]}^{3.} - g \vec{e}_z + \overbrace{\nu \nabla^2 \vec{v}}^{1.}
 \end{align*}
@@ -72,15 +72,16 @@ Which we can project on both axes:
 One assumption we cannot make is constant temperature, this requires us to write out an \textit{energy equation}.
 
 \begin{align*}
-    \frac{D T }{D t} = K \nabla^2 T  \\
-    \frac{\partial T }{\partial t} + u \frac{\partial T }{\partial x} + w \frac{\partial T }{\partial z} - K \nabla^2 T  = 0 \tag{4}
+    \frac{\mathrm{d}T }{\mathrm{d} t} = k \nabla^2 T  \\
+    \frac{\partial T }{\partial t} + u \frac{\partial T }{\partial x} + w \frac{\partial T }{\partial z} - k \nabla^2 T  = 0 \tag{4}
 \end{align*}
 
-Lorenz roughly started with equations $(1)$, $(2)$, $(3)$, $(4)$. From $(1)$, $\nabla^2 \vec{v} = 0$ we get that:
+Lorenz roughly started with equations $(1)$, $(2)$, $(3)$, $(4)$. From $(1)$, $\nabla\cdot \vec{v} = 0$ we get that:
 
 \begin{align*}
-    \vec{v} = \nabla x (\psi \vec{e}_y)\\
-    u = -\frac{\partial \psi}{\partial z} \text{ , } w = -\frac{\partial \psi}{\partial x}
+    \vec{v} = \nabla \times(\psi \vec{e}_y)\\
+    u = -\frac{\partial \psi}{\partial z},\;
+    w = \frac{\partial \psi}{\partial x}
 \end{align*}
 
 where $\psi$ is the so-called vorticity, which is an unknown. Considering a steady-state system, there exists a steady state solution for $T$ which is linear as a function of $z$. \\
@@ -100,40 +101,44 @@ Then by plugging in the $(1)$ into $(4)$, we get:
 In order to solve these equations, this requires boundary conditions:
 
 \begin{enumerate}
-    \item $\theta_{z = 0,H} = 0$, "no heat flowing the floor and ceiling"
-    \item $\psi_{z = 0,H} = 0$ "only tangential flow to the ground"
-    \item $\nabla^2 \psi_{z = 0,H} = 0$ "no important viscous effects close to the walls"
+    \item $\theta|_{z = 0,H} = 0~$, "no heat flowing the floor and ceiling"
+    \item $\psi|_{z = 0,H} = 0~$, "only tangential flow to the ground"
+    \item $\nabla^2 \psi|_{z = 0,H} = 0~$, "no important viscous effects close to the walls"
 \end{enumerate}
 
 Conditions $2.$ and $3.$ are often referred to as free boundary conditions. \\
 
-One we have theses equations, one cannot simplify further. How do we get a solution there? At the time the only approach was expanding $\theta$ and $\psi$ as Fourier series. Previously, Saltzman had found that only $3$ Fourier modes were enough to describe most of the dynamics. \\
+One we have theses equations, one cannot simplify further. How do we get a solution there? At the time the only approach was expanding $\theta$ and $\psi$ as Fourier series as an Ansatz. Previously, Saltzman had found that only $3$ Fourier modes were enough to describe most of the dynamics. \\
 
-We have $3$ modes, the flow is periodic along $x$, with period $H/a$, where $a$ is the aspect ratio of the convection cell. We use the following solution approximation:
+We have $3$ modes, the flow is periodic along $x$, with period $H/a$, where $a$ is the aspect ratio of the convection cell. We use the following Ansatz :
 
 \begin{align*}
     \psi = x(t) \alpha_1 \sin\left( \pi a \frac{x}{H} \right) \sin\left( \pi \frac{z}{H} \right) \\
     \theta = y(t) \alpha_2 \cos\left( \pi a \frac{x}{H} \right) \sin\left( \pi \frac{z}{H} \right) + z(t) \alpha_3 \sin\left(\frac{2 \pi z}{H}\right) \\
-    \alpha_1 = \frac{\sqrt{2} (1+a^2) K }{a}\text{ , }\alpha_2 = \frac{\sqrt{2} \Delta T }{\pi R} \text{ , } \frac{\alpha_2}{\sqrt{2}} \\
-    R = \frac{g \epsilon H^3 \Delta T a^2}{\nu K \pi^4 (1+a^2)^3}
-\end{align*}
+    \end{align*}
+Where
+\begin{equation*}
+    \alpha_1 = \frac{\sqrt{2} (1+a^2) k }{a},~
+    \alpha_2 = \frac{\sqrt{2} \Delta T }{\pi R},~ 
+    \alpha_3 = \frac{\alpha_2}{\sqrt{2}},~
+    R = \frac{g \epsilon H^3 \Delta T a^2}{\nu k \pi^4 (1+a^2)^3}
+\end{equation*}
 
-Once plugged into the equations of the system, we get the following dynamics:
+Once plugged into the equations of the system, we get the famous Lorenz model
 
 \begin{align*}
-    \text{Lorenz model: }
     \begin{cases}
-        \frac{d x}{d \tau} = - \sigma x + \sigma y \\
-        \frac{d y}{d \tau} = - xz + Rx - y \\
-        \frac{d z}{d \tau} = xy - bz 
+        \dot{x} = - \sigma x + \sigma y \\
+        \dot{y} = - xz + Rx - y \\
+        \dot{z} = xy - bz 
     \end{cases}
 \end{align*}
-
-with the following constants:
+Where $\dot{f} \equiv \frac{\mathrm{d}f}{\mathrm{d}\tau}$
+and we introduced the following constants:
 
 \begin{align*}
     \overbrace{\tau = \pi^2 \frac{(1-a^2)k}{H^2} t}^\text{dimensionless time} \\
-    \sigma = \frac{\nu}{a} \text{ , } b = \frac{4}{1 + a^2}
+    \sigma = \frac{\nu}{a}, ~ b = \frac{4}{1 + a^2}
 \end{align*}
 
 Equations like the Lorenz model were the kind of system that computers could solve at the time. The publication comes with numerical experiments: let $\sigma=10$, $b=8/3$ and varying $R$.
